@@ -1,0 +1,78 @@
+author:
+  name: "Your Name"
+  email: "your.email@example.com"
+
+templates:
+  standard:
+    description: "Standard Python project with common tools"
+    dependencies:
+      - "pandas>=2.3.1,<3.0.0"
+    dev_dependencies:
+      poetry:
+        - "pytest^7.4.0"
+        - "black^24.0.0"
+        - "mypy^1.8.0"
+      uv:
+        - "pytest>=7.4.0"
+        - "black>=24.0.0"
+        - "mypy>=1.8.0"
+    files:
+      - "gitignore"
+      - "readme"
+      - "makefile"
+      - "main"
+      - "test"
+
+  minimal:
+    description: "Minimal Python project structure"
+    dependencies: []
+    dev_dependencies:
+      poetry:
+        - "pytest^7.4.0"
+      uv:
+        - "pytest>=7.4.0"
+    files:
+      - "gitignore"
+      - "readme"
+      - "main"
+
+  cli:
+    description: "CLI application template"
+    dependencies:
+      - "click>=8.0.0"
+    dev_dependencies:
+      poetry:
+        - "pytest^7.4.0"
+        - "black^24.0.0"
+      uv:
+        - "pytest>=7.4.0"
+        - "black>=24.0.0"
+    files:
+      - "gitignore"
+      - "readme"
+      - "makefile"
+      - "cli_main"
+      - "test"
+
+  web:
+    description: "Web application template"
+    dependencies:
+      - "fastapi>=0.100.0"
+      - "uvicorn>=0.20.0"
+    dev_dependencies:
+      poetry:
+        - "pytest^7.4.0"
+        - "black^24.0.0"
+        - "httpx^0.24.0"
+      uv:
+        - "pytest>=7.4.0"
+        - "black>=24.0.0"
+        - "httpx>=0.24.0"
+    files:
+      - "gitignore"
+      - "readme"
+      - "makefile"
+      - "web_main"
+      - "test"
+
+python_version: ">=3.11"
