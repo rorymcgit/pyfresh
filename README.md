@@ -15,8 +15,8 @@ A configurable, extensible Python project generator that supports multiple templ
 
 ```bash
 # Install from source
-git clone https://github.com/yourusername/project-generator.git
-cd project-generator
+git clone https://github.com/yourusername/pyfresh.git
+cd pyfresh
 poetry install
 
 # Or install globally
@@ -28,13 +28,13 @@ pip install dist/*.whl
 
 ```bash
 # Generate a standard Python project
-project-generator my-awesome-project
+pyfresh my-awesome-project
 
 # Generate with specific template and tool
-project-generator my-cli-app --template cli --tool uv
+pyfresh my-cli-app --template cli --tool uv
 
 # Use custom configuration
-project-generator my-project --config my-config.yaml
+pyfresh my-project --config my-config.yaml
 ```
 
 ## Templates
@@ -67,7 +67,7 @@ templates:
 ## CLI Options
 
 ```
-usage: project-generator [-h] [--author AUTHOR] [--email EMAIL] 
+usage: pyfresh [-h] [--author AUTHOR] [--email EMAIL] 
                         [--description DESCRIPTION] [--template {standard,minimal,cli,web}]
                         [--tool {poetry,uv}] [--config CONFIG] [--output-dir OUTPUT_DIR]
                         [--force] [--dry-run] [--version]
@@ -99,8 +99,8 @@ optional arguments:
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/project-generator.git
-cd project-generator
+git clone https://github.com/yourusername/pyfresh.git
+cd pyfresh
 
 # Install dependencies
 poetry install
@@ -112,7 +112,7 @@ make test
 make lint
 
 # Run the generator locally
-poetry run project-generator --help
+poetry run pyfresh --help
 ```
 
 ## Contributing

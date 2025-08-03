@@ -4,8 +4,8 @@ import tempfile
 from pathlib import Path
 import pytest
 
-from project_generator.config import Config
-from project_generator.generator import ProjectGenerator
+from pyfresh.config import Config
+from pyfresh.generator import PyfreshProjectGenerator
 
 
 def test_config_loading():
@@ -18,8 +18,8 @@ def test_config_loading():
 def test_project_generation_dry_run(tmp_path):
     """Test project generation in dry-run mode."""
     config = Config.load()
-    generator = ProjectGenerator(config)
-    
+    generator = PyfreshProjectGenerator(config)
+
     success = generator.generate(
         project_name="test-project",
         author="Test Author",
@@ -29,7 +29,7 @@ def test_project_generation_dry_run(tmp_path):
         output_dir=tmp_path,
         dry_run=True
     )
-    
+
     assert success
     # In dry-run mode, no files should be created
     assert not (tmp_path / "test-project").exists()
@@ -38,8 +38,8 @@ def test_project_generation_dry_run(tmp_path):
 def test_project_generation_real(tmp_path):
     """Test actual project generation."""
     config = Config.load()
-    generator = ProjectGenerator(config)
-    
+    generator = PyfreshProjectGenerator(config)
+
     success = generator.generate(
         project_name="test-project",
         author="Test Author",
@@ -49,9 +49,9 @@ def test_project_generation_real(tmp_path):
         output_dir=tmp_path,
         dry_run=False
     )
-    
+
     assert success
-    
+
     project_dir = tmp_path / "test-project"
     assert project_dir.exists()
     assert (project_dir / "README.md").exists()
@@ -63,8 +63,8 @@ def test_project_generation_real(tmp_path):
 def test_template_validation():
     """Test template validation."""
     config = Config.load()
-    generator = ProjectGenerator(config)
-    
+    generator = PyfreshProjectGenerator(config)
+
     # Valid template should work
     success = generator.generate(
         project_name="test-project",
@@ -74,7 +74,7 @@ def test_template_validation():
         dry_run=True
     )
     assert success
-    
+
     # Invalid template should fail
     success = generator.generate(
         project_name="test-project",

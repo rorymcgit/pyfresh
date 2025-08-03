@@ -20,6 +20,6 @@ build:
 	poetry build
 
 run:
-	poetry run project-generator
+	poetry run pyfresh
 
 .PHONY: install lint test test-cov clean build run

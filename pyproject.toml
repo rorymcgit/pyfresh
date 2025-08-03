@@ -1,10 +1,10 @@
 [tool.poetry]
-name = "project-generator"
+name = "pyfresh"
 version = "0.1.0"
 description = "A configurable Python project generator supporting multiple templates and tools"
 authors = ["Rory McGuinness <rjmcguinness@gmail.com>"]
 readme = "README.md"
-packages = [{include = "project_generator", from = "src"}]
+packages = [{include = "pyfresh", from = "src"}]
 
 [tool.poetry.dependencies]
 python = "^3.11"
@@ -18,7 +18,7 @@ mypy = "^1.8.0"
 pytest-cov = "^4.1.0"
 
 [tool.poetry.scripts]
-project-generator = "project_generator.cli:main"
+pyfresh = "pyfresh.cli:main"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
