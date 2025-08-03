@@ -27,7 +27,7 @@ def test_project_generation_dry_run(tmp_path):
         template="minimal",
         tool="poetry",
         output_dir=tmp_path,
-        dry_run=True
+        dry_run=True,
     )
 
     assert success
@@ -47,7 +47,7 @@ def test_project_generation_real(tmp_path):
         template="minimal",
         tool="poetry",
         output_dir=tmp_path,
-        dry_run=False
+        dry_run=False,
     )
 
     assert success
@@ -71,7 +71,7 @@ def test_template_validation():
         author="Test Author",
         email="test@example.com",
         template="standard",
-        dry_run=True
+        dry_run=True,
     )
     assert success
 
@@ -81,6 +81,6 @@ def test_template_validation():
         author="Test Author",
         email="test@example.com",
         template="nonexistent",
-        dry_run=True
+        dry_run=True,
     )
     assert not success

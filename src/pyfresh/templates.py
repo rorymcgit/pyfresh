@@ -1,35 +1,39 @@
 """Template rendering for project files."""
 
-from typing import Dict, Any
+from typing import Any
 
 
 class TemplateRenderer:
     """Renders project file templates."""
-    
-    def __init__(self, config):
+
+    def __init__(self, config: Any) -> None:
         """Initialize renderer with configuration."""
         self.config = config
-    
+
     def render_file(
-        self,
-        file_type: str,
-        context: Dict[str, Any],
-        template_config: Dict[str, Any],
-        tool: str
+        self, file_type: str, context: dict, template_config: dict, tool: str
     ) -> str:
         """Render a file template with the given context."""
-        
+
         # Always render pyproject.toml
-        if file_type not in ["gitignore", "readme", "makefile", "main", "cli_main", "web_main", "test"]:
+        if file_type not in [
+            "gitignore",
+            "readme",
+            "makefile",
+            "main",
+            "cli_main",
+            "web_main",
+            "test",
+        ]:
             file_type = "pyproject"
-        
+
         method_name = f"_render_{file_type}"
         if hasattr(self, method_name):
-            return getattr(self, method_name)(context, template_config, tool)
+            return str(getattr(self, method_name)(context, template_config, tool))
         else:
             raise ValueError(f"Unknown file type: {file_type}")
-    
-    def _render_gitignore(self, context: Dict[str, Any], template_config: Dict[str, Any], tool: str) -> str:
+
+    def _render_gitignore(self, context: dict, template_config: dict, tool: str) -> str:
         """Render .gitignore file."""
         return """__pycache__/
 *.pyc
@@ -69,16 +73,20 @@ build/
 .pdm-python
 .pdm-build/
 """
-    
-    def _render_readme(self, context: Dict[str, Any], template_config: Dict[str, Any], tool: str) -> str:
+
+    def _render_readme(self, context: dict, template_config: dict, tool: str) -> str:
         """Render README.md file."""
         project_name = context["project_name"]
         description = context["description"]
         package_name = context["package_name"]
-        
+
         install_cmd = "poetry install" if tool == "poetry" else "uv sync"
-        run_cmd = f"poetry run python -m {package_name}" if tool == "poetry" else f"uv run python -m {package_name}"
-        
+        run_cmd = (
+            f"poetry run python -m {package_name}"
+            if tool == "poetry"
+            else f"uv run python -m {package_name}"
+        )
+
         return f"""# {project_name}
 
 {description}
@@ -112,8 +120,8 @@ make lint
 
 MIT License
 """
-    
-    def _render_makefile(self, context: Dict[str, Any], template_config: Dict[str, Any], tool: str) -> str:
+
+    def _render_makefile(self, context: dict, template_config: dict, tool: str) -> str:
         """Render Makefile."""
         if tool == "poetry":
             return """install:
@@ -149,8 +157,8 @@ clean:
 
 .PHONY: install lint test clean
 """
-    
-    def _render_main(self, context: Dict[str, Any], template_config: Dict[str, Any], tool: str) -> str:
+
+    def _render_main(self, context: dict, template_config: dict, tool: str) -> str:
         """Render main.py file."""
         return """def main():
     \"\"\"Main entry point.\"\"\"
@@ -160,8 +168,8 @@ clean:
 if __name__ == "__main__":
     main()
 """
-    
-    def _render_cli_main(self, context: Dict[str, Any], template_config: Dict[str, Any], tool: str) -> str:
+
+    def _render_cli_main(self, context: dict, template_config: dict, tool: str) -> str:
         """Render CLI main file."""
         return """import click
 
@@ -176,8 +184,8 @@ def main(name):
 if __name__ == '__main__':
     main()
 """
-    
-    def _render_web_main(self, context: Dict[str, Any], template_config: Dict[str, Any], tool: str) -> str:
+
+    def _render_web_main(self, context: dict, template_config: dict, tool: str) -> str:
         """Render web application main file."""
         return """from fastapi import FastAPI
 
@@ -198,11 +206,11 @@ if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
 """
-    
-    def _render_test(self, context: Dict[str, Any], template_config: Dict[str, Any], tool: str) -> str:
+
+    def _render_test(self, context: dict, template_config: dict, tool: str) -> str:
         """Render test file."""
         package_name = context["package_name"]
-        
+
         # Determine what to import based on template
         if "cli_main" in template_config.get("files", []):
             import_line = f"from {package_name}.cli import main"
@@ -229,14 +237,14 @@ if __name__ == "__main__":
     main()
     captured = capsys.readouterr()
     assert "Hello" in captured.out'''
-        
+
         return f"""{import_line}
 
 
 {test_content}
 """
-    
-    def _render_pyproject(self, context: Dict[str, Any], template_config: Dict[str, Any], tool: str) -> str:
+
+    def _render_pyproject(self, context: dict, template_config: dict, tool: str) -> str:
         """Render pyproject.toml file."""
         project_name = context["project_name"]
         package_name = context["package_name"]
@@ -244,29 +252,50 @@ if __name__ == "__main__":
         email = context["email"]
         description = context["description"]
         python_version = context["python_version"]
-        
+
         dependencies = template_config.get("dependencies", [])
         dev_deps = template_config.get("dev_dependencies", {}).get(tool, [])
-        
+
         if tool == "poetry":
             return self._render_poetry_pyproject(
-                project_name, package_name, author, email, description,
-                python_version, dependencies, dev_deps
+                project_name,
+                package_name,
+                author,
+                email,
+                description,
+                python_version,
+                dependencies,
+                dev_deps,
             )
         else:  # uv
             return self._render_uv_pyproject(
-                project_name, package_name, author, email, description,
-                python_version, dependencies, dev_deps
+                project_name,
+                package_name,
+                author,
+                email,
+                description,
+                python_version,
+                dependencies,
+                dev_deps,
             )
-    
+
     def _render_poetry_pyproject(
-        self, project_name: str, package_name: str, author: str, email: str,
-        description: str, python_version: str, dependencies: list, dev_deps: list
+        self,
+        project_name: str,
+        package_name: str,
+        author: str,
+        email: str,
+        description: str,
+        python_version: str,
+        dependencies: list,
+        dev_deps: list,
     ) -> str:
         """Render Poetry pyproject.toml."""
-        deps_str = "\n".join([f'"{dep}"' for dep in dependencies]) if dependencies else ""
+        deps_str = (
+            "\n".join([f'"{dep}"' for dep in dependencies]) if dependencies else ""
+        )
         dev_deps_str = "\n".join([f'{dep.split("^")[0]} = "{dep}"' for dep in dev_deps])
-        
+
         return f"""[tool.poetry]
 name = "{package_name}"
 version = "0.1.0"
@@ -295,15 +324,24 @@ python_version = "3.11"
 warn_return_any = true
 warn_unused_configs = true
 """
-    
+
     def _render_uv_pyproject(
-        self, project_name: str, package_name: str, author: str, email: str,
-        description: str, python_version: str, dependencies: list, dev_deps: list
+        self,
+        project_name: str,
+        package_name: str,
+        author: str,
+        email: str,
+        description: str,
+        python_version: str,
+        dependencies: list,
+        dev_deps: list,
     ) -> str:
         """Render uv pyproject.toml."""
-        deps_str = "\n".join([f'    "{dep}",' for dep in dependencies]) if dependencies else ""
+        deps_str = (
+            "\n".join([f'    "{dep}",' for dep in dependencies]) if dependencies else ""
+        )
         dev_deps_str = "\n".join([f'    "{dep}",' for dep in dev_deps])
-        
+
         return f"""[project]
 name = "{package_name}"
 version = "0.1.0"

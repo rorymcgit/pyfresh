@@ -4,7 +4,7 @@ import os
 import shutil
 import subprocess
 from pathlib import Path
-from typing import Dict, Any, Optional
+from typing import Any
 
 from .config import Config
 from .templates import TemplateRenderer
@@ -21,14 +21,14 @@ class PyfreshProjectGenerator:
     def generate(
         self,
         project_name: str,
-        author: Optional[str] = None,
-        email: Optional[str] = None,
-        description: Optional[str] = None,
+        author: str | None = None,
+        email: str | None = None,
+        description: str | None = None,
         template: str = "standard",
         tool: str = "poetry",
         output_dir: Path = Path.cwd(),
         force: bool = False,
-        dry_run: bool = False
+        dry_run: bool = False,
     ) -> bool:
         """Generate a new Python project."""
 
@@ -54,7 +54,7 @@ class PyfreshProjectGenerator:
             "email": email,
             "description": description,
             "tool": tool,
-            "python_version": self.config.get("python_version", ">=3.11")
+            "python_version": self.config.get("python_version", ">=3.11"),
         }
 
         # Get template configuration
@@ -69,14 +69,20 @@ class PyfreshProjectGenerator:
 
         if project_dir.exists():
             if not force:
-                print(f"❌ Project directory '{project_dir}' already exists. Use --force to overwrite.")
+                print(
+                    f"❌ Project directory '{project_dir}' already exists. Use --force to overwrite."
+                )
                 return False
             elif not dry_run:
                 shutil.rmtree(project_dir)
 
         if dry_run:
-            print(f"🔍 Dry run - would create project '{project_name}' in '{project_dir}'")
-            print(f"📋 Template: {template} ({template_config.get('description', 'No description')})")
+            print(
+                f"🔍 Dry run - would create project '{project_name}' in '{project_dir}'"
+            )
+            print(
+                f"📋 Template: {template} ({template_config.get('description', 'No description')})"
+            )
             print(f"🔧 Tool: {tool}")
             print(f"👤 Author: {author} <{email}>")
             print("\n📁 Files that would be created:")
@@ -119,20 +125,17 @@ class PyfreshProjectGenerator:
     def _create_project_structure(
         self,
         project_dir: Path,
-        context: Dict[str, Any],
-        template_config: Dict[str, Any],
+        context: dict[str, Any],
+        template_config: dict[str, Any],
         tool: str,
-        dry_run: bool
+        dry_run: bool,
     ) -> bool:
         """Create the project directory structure and files."""
 
         package_name = context["package_name"]
 
         # Create directories
-        directories = [
-            f"src/{package_name}",
-            "tests"
-        ]
+        directories = [f"src/{package_name}", "tests"]
 
         for dir_path in directories:
             full_dir = project_dir / dir_path
@@ -164,7 +167,7 @@ class PyfreshProjectGenerator:
                     # Ensure parent directory exists
                     full_path.parent.mkdir(parents=True, exist_ok=True)
 
-                    with open(full_path, 'w') as f:
+                    with open(full_path, "w") as f:
                         f.write(file_content)
 
             except Exception as e:
@@ -173,7 +176,7 @@ class PyfreshProjectGenerator:
 
         return True
 
-    def _get_file_path(self, file_type: str, context: Dict[str, Any]) -> str:
+    def _get_file_path(self, file_type: str, context: dict[str, Any]) -> str:
         """Get the file path for a given file type."""
         package_name = context["package_name"]
 
@@ -185,7 +188,7 @@ class PyfreshProjectGenerator:
             "cli_main": f"src/{package_name}/cli.py",
             "web_main": f"src/{package_name}/app.py",
             "test": "tests/test_main.py",
-            "pyproject": "pyproject.toml"
+            "pyproject": "pyproject.toml",
         }
 
         # Always include pyproject.toml
@@ -198,12 +201,14 @@ class PyfreshProjectGenerator:
         """Initialize a git repository in the project directory."""
         try:
             # Check if git is available
-            subprocess.run(["git", "--version"],
-                         capture_output=True, check=True, cwd=project_dir)
+            subprocess.run(
+                ["git", "--version"], capture_output=True, check=True, cwd=project_dir
+            )
 
             # Initialize git repo
-            subprocess.run(["git", "init"],
-                         capture_output=True, check=True, cwd=project_dir)
+            subprocess.run(
+                ["git", "init"], capture_output=True, check=True, cwd=project_dir
+            )
 
             print("🔧 Initialized git repository")
 
